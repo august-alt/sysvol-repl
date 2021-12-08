@@ -14,8 +14,8 @@ sshpass -p "${SSH_PASS}" ssh-copy-id -i /home/test/.ssh/id_ed25519.pub root@${OT
 
 cat > /etc/osync/sync.sh << EOF
 #!/usr/bin/env bash
-SUDO_EXEC=yes osync.sh --initiator="/var/lib/samba/sysvol/$DOMAIN_ID/" --target="ssh://root@$OTHER_DC:22//var/lib/samba/sysvol/$DOMAIN_ID/" --rsakey=/home/test/.ssh/id_ed25519
-ssh -i /home/test/.ssh/id_ed25519 root@$OTHER_DC "bash -s samba-tool ntacl sysvolreset &"
+SKIP_DELETION=initiator SYNC_TYPE=initiator2target INITIATOR_CUSTOM_STATE_DIR=".initiator" TARGET_CUSTOM_STATE_DIR=".target" PRESERVE_ACL=no PRESERVE_XATTR=no SUDO_EXEC=yes osync.sh --initiator="/var/lib/samba/sysvol/$DOMAIN_ID/" --target="ssh://root@$OTHER_DC:22//var/lib/samba/sysvol/$DOMAIN_ID/" --rsakey=/home/test/.ssh/id_ed25519
+ssh -i /home/test/.ssh/id_ed25519 root@$OTHER_DC "samba-tool ntacl sysvolreset"
 EOF
 
 chmod +x /etc/osync/sync.sh
